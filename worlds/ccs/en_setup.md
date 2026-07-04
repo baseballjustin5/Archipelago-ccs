@@ -15,7 +15,8 @@ TODO: Add steps to configure and run the Cash cleaner simulator client and any o
 	* Save locations
     * Windows:
         * `C:\Users\<username>\AppData\Local\CashCleanerSimulator`
-          * You can use `%appdata%` in your File Explorer then go "up" a folder to `\AppData\`, then go to `Local\CashCleanerSimulator`
+          * You can use `%localappdata%` in your File Explorer to get directly to `\appdata\local\` then go to the `CashCleanerSimulator` folder.
+          * The `CashCleanerSimulator\Saved` folder has everything in your game, both game saves, as well as game configs like visual, control, and audio settings.
 
 2. Download UE4SS Experimental-Latest: (CCS uses Unreal Engine Version 5.4) 
   * As of July 2nd, 2026 0600 CDT

@@ -178,4 +178,4 @@ Here is a link to their Nexus mods page as it's where I got access to their mods
 - [Gamuholic](https://www.nexusmods.com/profile/Gamuholic)
 - [MjakovskiyChai](https://www.nexusmods.com/profile/MjakovskiyChai)
 
-Want your name removed or feel like I forget to mention you? feel free to open an issue :)  
+Want your name removed or feel like I forget to mention you? feel free to open an issue :)

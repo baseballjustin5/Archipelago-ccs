@@ -1,4 +1,5 @@
-"""Minimal Cash cleaner simulator world for Archipelago
+"""
+Minimal Cash cleaner simulator world for Archipelago
 
 This is a minimal, example implementation to get a new world into the generator.
 Add TODOs for any missing game-specific logic (regions, locations, items, rules).

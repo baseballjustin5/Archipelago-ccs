@@ -39,7 +39,8 @@ class CcsWebWorld(WebWorld):
 
 
 class CcsWorld(World):
-    """Minimal Cash cleaner simulator world.
+    """
+    Minimal Cash cleaner simulator world.
 
     TODOs:
       - Add accurate regions and locations

@@ -1,4 +1,5 @@
-"""Access rules for Cash cleaner simulator (ccs).
+"""
+Access rules for Cash cleaner simulator (ccs).
 
 This module defines capability predicates (washer/dryer/money/marked/goo detection ...)
 and applies them to locations.
@@ -200,7 +201,7 @@ location_name_to_rule = {
     "Art Bill collection: USD 20":                  lambda player: lambda state: has_done_quest(player, "Main Quest Side: Light It Up")(state),
     "Art Bill collection: USD 10":                  lambda player: lambda state: has_done_quest(player, "Main Quest Side: Light It Up")(state),
     # SideQuest Difficulty
-    "Side quest Difficulty 0":                      lambda player: lambda state: reputation_at_least(1)(state),
+    "Side quest Difficulty 0":                      lambda player: lambda state: reputation_at_least(player, 1)(state),
     "Side quest Difficulty 1":                      lambda player: lambda state: reputation_at_least(player, 1)(state),
     "Side quest Difficulty 2":                      lambda player: lambda state: reputation_at_least(player, 1)(state),
     "Side quest Difficulty 3":                      lambda player: lambda state: reputation_at_least(player, 4)(state) and has_counter(player)(state),

@@ -1,4 +1,5 @@
-"""Static item definitions for Cash cleaner simulator (ccs).
+"""
+Static item definitions for Cash cleaner simulator (ccs).
 """
 from __future__ import annotations
 from typing import Dict
@@ -37,6 +38,12 @@ item_name_to_id = {
     "Reduced Big Washer requirement": 0xCE055C,
     "Reduced Sticker gun requirement": 0xCE055D,
     "Reduced Coin counter requirement": 0xCE055E,
+    # Traps
+    "Random Trash Trap": 0xCE0600,
+    "Random Wet Trap": 0xCE0601,
+    "Random Dirty Trap": 0xCE0602,
+    "Random Inked Trap": 0xCE0603,
+    "Random Goo? Trap": 0xCE0604,
 }
 
 item_name_to_count = {
@@ -49,7 +56,7 @@ item_name_to_count = {
     "More rare money": 2,
     "More quest money": 2,
     "Stack Size Upgrade": 4,
-    "Reputation": 43,  
+    "Reputation": 43,
     "Cryptocurrency": 9,
     "Reduced Money gun requirement": 3,
     "Reduced Washer requirement": 3,
@@ -72,6 +79,12 @@ item_name_to_count = {
     "Reduced Big Washer requirement": 3,
     "Reduced Sticker gun requirement": 3,
     "Reduced Coin counter requirement": 3,
+    # Traps
+    "Random Trash Trap": 0,
+    "Random Wet Trap": 0,
+    "Random Dirty Trap": 0,
+    "Random Inked Trap": 0,
+    "Random Goo? Trap": 0,
 }
 
 item_name_to_classification = {
@@ -107,4 +120,10 @@ item_name_to_classification = {
     "Reduced Big Washer requirement": ItemClassification.progression,
     "Reduced Sticker gun requirement": ItemClassification.progression,
     "Reduced Coin counter requirement": ItemClassification.useful,
+    # Traps
+    "Random Trash Trap": ItemClassification.trap,
+    "Random Wet Trap": ItemClassification.trap,
+    "Random Dirty Trap": ItemClassification.trap,
+    "Random Inked Trap": ItemClassification.trap,
+    "Random Goo? Trap": ItemClassification.trap,
 }

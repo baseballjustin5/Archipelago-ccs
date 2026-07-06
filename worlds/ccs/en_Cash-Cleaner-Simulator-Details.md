@@ -113,8 +113,12 @@ The "locations" are actions you need to do in order to get rewards:
 
 ```lua
 return {
-  -- AP Server connection; localhost if local (same computer), IP_Address:port if another device - 192.168.1.1:38281 for example
-  host = "<either 'localhost:Port' or 'IP_Address:Port' for connection to hosting AP server>",
+  -- AP Server connection; localhost if local (same computer),
+  -- IP_Address:port if another device - 192.168.1.1:38281 for example
+  host = (
+        "<either 'localhost:Port' or 
+        'IP_Address:Port' for connection to hosting AP server>"
+        ),
 
   player = "<player name used in yaml>",
 

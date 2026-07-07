@@ -154,22 +154,22 @@ location_name_to_rule = {
     "SideQuest 29":                                 lambda player: lambda state: reputation_at_least(player, 15)(state) and has_done_quest(player, "SideQuest 28")(state) and has_counter(player)(state),
     "SideQuest 30":                                 lambda player: lambda state: reputation_at_least(player, 15)(state) and has_done_quest(player, "SideQuest 29")(state) and has_counter(player)(state),
     # Side quests bonus
-    "Quest Bonus: Exact money value":               lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: More money value":                lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: Much more money value":           lambda player: lambda state: state.has("More quest money", player, 1),
-    "Quest Bonus: Single delivery":                 lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: Nothing else":                    lambda player: lambda state: reputation_at_least(player, 1)(state),
+    "Quest Bonus: Exact money value":               lambda player: lambda state: state.has("Main Quest Tutorial: Conveyor completed", player),
+    "Quest Bonus: More money value":                lambda player: lambda state: state.has("Main Quest Tutorial: Conveyor completed", player),
+    "Quest Bonus: Much more money value":           lambda player: lambda state: state.has("Main Quest Tutorial: Conveyor completed", player),
+    "Quest Bonus: Single delivery":                 lambda player: lambda state: reputation_at_least(player, 2)(state),
+    "Quest Bonus: Nothing else":                    lambda player: lambda state: reputation_at_least(player, 2)(state),
     "Quest Bonus: No marked money":                 lambda player: lambda state: has_marked_detector(player)(state),
     "Quest Bonus: No marked money specific quest":  lambda player: lambda state: has_marked_detector(player)(state) and reputation_at_least(player, 6)(state),
     "Quest Bonus: No fake money":                   lambda player: lambda state: has_fake_money_detector(player)(state),
     "Quest Bonus: No fake money specific quest":    lambda player: lambda state: has_fake_money_detector(player)(state) and reputation_at_least(player, 6)(state),
-    "Quest Bonus: Perfect packs":                   lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: Perfect packs specific quest":    lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: Perfect blocks":                  lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: Perfect blocks specific quest":   lambda player: lambda state: reputation_at_least(player, 1)(state),
+    "Quest Bonus: Perfect packs":                   lambda player: lambda state: reputation_at_least(player, 2)(state),
+    "Quest Bonus: Perfect packs specific quest":    lambda player: lambda state: reputation_at_least(player, 2)(state),
+    "Quest Bonus: Perfect blocks":                  lambda player: lambda state: reputation_at_least(player, 2)(state),
+    "Quest Bonus: Perfect blocks specific quest":   lambda player: lambda state: reputation_at_least(player, 2)(state),
     "Quest Bonus: Marked with Labels!":             lambda player: lambda state: has_sticker(player)(state),
-    "Quest Bonus: Perfect rolls":                   lambda player: lambda state: reputation_at_least(player, 1)(state),
-    "Quest Bonus: Perfect roll-blocks":             lambda player: lambda state: reputation_at_least(player, 1)(state),
+    "Quest Bonus: Perfect rolls":                   lambda player: lambda state: reputation_at_least(player, 2)(state),
+    "Quest Bonus: Perfect roll-blocks":             lambda player: lambda state: reputation_at_least(player, 2)(state),
     # World interactions
     "Unlock relax area":                            lambda player: lambda state: has_done_quest(player, "Main Quest Side: Light It Up")(state) and reputation_at_least(player, 9)(state),
     "Unlock upper area":                            lambda player: lambda state: has_done_quest(player, "Main Quest Side: Light It Up")(state) and reputation_at_least(player, 9)(state),
@@ -222,7 +222,7 @@ def set_rules(world) -> None:
 
     for loc_name in world.location_name_to_id.keys():
         loc = mw.get_location(loc_name, player)
-        set_rule(loc, location_name_to_rule[loc_name])
+        set_rule(loc, location_name_to_rule[loc_name](player))
 
 def main_quest_rule(quest_name: str) -> Callable:
     return location_name_to_rule[quest_name]

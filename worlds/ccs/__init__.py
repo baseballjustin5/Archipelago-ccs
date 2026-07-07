@@ -1,10 +1,10 @@
 """
-Minimal Cash cleaner simulator world for Archipelago
+Minimal Cash Cleaner Simulator world for Archipelago
 
 This is a minimal, example implementation to get a new world into the generator.
 Add TODOs for any missing game-specific logic (regions, locations, items, rules).
 """
-from typing import Dict, List
+from typing import ClassVar, Dict, cast
 import zipfile
 import os
 
@@ -14,22 +14,22 @@ from worlds.AutoWorld import World, WebWorld
 from . import items as _items
 from . import locations as _locations
 from .Rules import main_quest_rule, relax_rule, set_rules as set_ccs_rules, side_quest_rule, upper_area_rule, victory_rule
-
+from .options import CashCleanerSimulatorOptions
 
 
 
 class CcsLocation(Location):
-    game: str = "Cash cleaner simulator"
+    game: str = "Cash Cleaner Simulator"
 
 class CcsItem(Item):
-    game: str = "Cash cleaner simulator"
+    game: str = "Cash Cleaner Simulator"
 
 class CcsWebWorld(WebWorld):
     theme = "default"
     tutorials = [
         Tutorial(
             "Multiworld Setup Guide",
-            "A short setup guide for Cash cleaner simulator.",
+            "A short setup guide for Cash Cleaner Simulator.",
             "English",
             "setup_en.md",
             "setup/en",
@@ -40,20 +40,22 @@ class CcsWebWorld(WebWorld):
 
 class CcsWorld(World):
     """
-    Minimal Cash cleaner simulator world.
+    Minimal Cash Cleaner Simulator world.
 
     TODOs:
       - Add accurate regions and locations
       - Flesh out items and item behaviours
       - Add options and presets if desired
     """
-    game: str = "Cash cleaner simulator"
+    game: ClassVar[str] = "Cash Cleaner Simulator"
     web = CcsWebWorld()
+
+    options_dataclass = CashCleanerSimulatorOptions
 
     # ID maps are loaded from `worlds/ccs/items.py` and `worlds/ccs/locations.py`,
     # which attempt to read `rewardList.lua` and `rewardLocations.lua` if present.
-    item_name_to_id: Dict[str, list] = _items.item_name_to_id
-    location_name_to_id: Dict[str, int] = _locations.location_name_to_id
+    item_name_to_id: ClassVar[Dict[str, int]] = _items.item_name_to_id
+    location_name_to_id: ClassVar[Dict[str, int]] = _locations.location_name_to_id
 
     def generate_early(self) -> None:
         """Set up the itempool for generation.
@@ -111,11 +113,29 @@ class CcsWorld(World):
 
         
     def create_item(self, name: str) -> Item:
-        """Return an Item instance for the given item name.
         """
+        Return an Item instance for the given item name.
+        """
+        opts = cast(CashCleanerSimulatorOptions, self.options)
+        enable_traps = opts.enable_traps.value
+        trap_density = opts.trap_density.value
+        selected_traps = opts.selected_traps.value
+        
+        if enable_traps:
+            if "All" in selected_traps:
+                active_traps = {"Trash Items", "Wet Bills", "Dirty Bills", "Inked Bills", "Goo Bills", "All"}
+            else:
+                active_traps = list(selected_traps)
+        
+        player_locations = list(self.multiworld.get_locations(self.player))
+        total_locations = len(player_locations)
+        filler_needed = total_locations - len(self.multiworld.itempool)
+        num_traps = int(filler_needed * (trap_density / 100))
+        
         code = self.item_name_to_id.get(name)
         classification = _items.item_name_to_classification[name]
         # default all items to progression for minimal behavior; adjust as needed
+
         return CcsItem(name, classification, code, self.player)
 
     def generate_output(self, output_directory: str):

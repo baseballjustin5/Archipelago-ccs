@@ -106,7 +106,7 @@ item_name_to_classification = {
     "Reduced Money counter requirement": ItemClassification.progression,
     "Reduced Money counter tier 2 requirement": ItemClassification.useful,
     "Reduced Euro Money counter tier 2 requirement": ItemClassification.progression,
-    "Reduced Yen Money counter tier 2 requirement": ItemClassification.useful,
+    "Reduced Yen Money counter tier 2 requirement": ItemClassification.progression,
     "Reduced Money counter tier 3 requirement": ItemClassification.useful,
     "Reduced Ladder requirement": ItemClassification.progression,
     "Reduced Sponge requirement": ItemClassification.useful,

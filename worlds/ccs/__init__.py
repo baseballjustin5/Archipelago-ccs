@@ -64,6 +64,17 @@ class CcsWorld(World):
         trap_density = opts.trap_density.value
         selected_traps = opts.selected_traps.value
 
+        # 20 (Short), 25 (Default), 43 (Medium), 65 (Long)
+        game_length = opts.game_length.value 
+
+        item_counts = dict(_items.item_name_to_count)
+
+        base_rep_count = 15
+        filler_rep_count = max(0, (game_length - base_rep_count))
+
+        item_counts["Reputation"] = base_rep_count
+        item_counts["Filler Reputation"] = filler_rep_count
+
         """
         TODO: determine realistic item counts and pre-placed items.
         """
@@ -84,6 +95,7 @@ class CcsWorld(World):
 
         total_locations = len(self.location_name_to_id)
         filler_needed = total_locations - len(itempool)
+    
         if enable_traps and filler_needed > 0:
             import math
             num_traps = math.floor(filler_needed * (trap_density/100))
@@ -147,21 +159,6 @@ class CcsWorld(World):
         """
         Return an Item instance for the given item name.
         """
-        opts = cast(CashCleanerSimulatorOptions, self.options)
-        enable_traps = opts.enable_traps.value
-        trap_density = opts.trap_density.value
-        selected_traps = opts.selected_traps.value
-        
-        if enable_traps:
-            if "All" in selected_traps:
-                active_traps = {"Trash Items", "Wet Bills", "Dirty Bills", "Inked Bills", "Goo Bills", "All"}
-            else:
-                active_traps = list(selected_traps)
-        
-        player_locations = list(self.multiworld.get_locations(self.player))
-        total_locations = len(player_locations)
-        filler_needed = total_locations - len(self.multiworld.itempool)
-        num_traps = int(filler_needed * (trap_density / 100))
         
         code = self.item_name_to_id.get(name)
         classification = _items.item_name_to_classification[name]

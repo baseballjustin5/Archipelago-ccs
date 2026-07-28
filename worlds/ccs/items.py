@@ -58,6 +58,7 @@ item_name_to_count = {
     "More quest money": 2,
     "Stack Size Upgrade": 4,
     "Reputation": 15,
+    "Filler Reputation": 0,
     "Cryptocurrency": 10,
     "Reduced Money gun requirement": 3,
     "Reduced Washer requirement": 3,

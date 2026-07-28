@@ -1,9 +1,16 @@
 from dataclasses import dataclass
-from Options import Toggle, Range, OptionSet, PerGameCommonOptions
+from Options import Toggle, Range, OptionSet, PerGameCommonOptions, Choice
 
 class EnableTraps(Toggle):
     display_name = "Enable Traps?"
     default = False
+
+class GameLength(Choice):
+    display_name = "Game Length"
+    option_short = 20
+    option_medium = 43
+    option_long = 65
+    default = 43
 
 class TrapDensity(Range):
     display_name = "Trap Desnity"
@@ -24,3 +31,4 @@ class CashCleanerSimulatorOptions(PerGameCommonOptions):
     enable_traps: EnableTraps
     trap_density: TrapDensity
     selected_traps: Traps
+    game_length: GameLength

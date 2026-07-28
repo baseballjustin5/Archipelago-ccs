@@ -7,8 +7,11 @@ class EnableTraps(Toggle):
 
 class TrapDensity(Range):
     display_name = "Trap Desnity"
+    option_low = 5
+    option_medium = 10
+    option_high = 15
     range_start = 0
-    range_end = 100
+    range_end = 20
     default = 10
 
 class Traps(OptionSet):

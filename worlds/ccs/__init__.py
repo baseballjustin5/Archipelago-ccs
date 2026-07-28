@@ -58,8 +58,13 @@ class CcsWorld(World):
     location_name_to_id: ClassVar[Dict[str, int]] = _locations.location_name_to_id
 
     def generate_early(self) -> None:
-        """Set up the itempool for generation.
+        """Set up the itempool for generation. """
+        opts = cast(CashCleanerSimulatorOptions, self.options)
+        enable_traps = opts.enable_traps.value
+        trap_density = opts.trap_density.value
+        selected_traps = opts.selected_traps.value
 
+        """
         TODO: determine realistic item counts and pre-placed items.
         """
         # Populate the itempool by preserving multiplicity from ITEM_TABLE (one Item per table entry)
@@ -76,6 +81,32 @@ class CcsWorld(World):
                         self.player,
                     )
                 )
+
+        total_locations = len(self.location_name_to_id)
+        filler_needed = total_locations - len(itempool)
+        if enable_traps and filler_needed > 0:
+            import math
+            num_traps = math.floor(filler_needed * (trap_density/100))
+
+            if "All" in selected_traps:
+                active_trap_types = ["Trash Items", "Wet Bills", "Dirty Bills", "Inked Bills", "Goo Bills"]
+            else:
+                active_trap_types = list(selected_traps)
+
+            if active_trap_types and num_traps > 0:
+                for i in range(num_traps):
+                    trap_name = active_trap_types[i % len(active_trap_types)]
+                    trap_id = self.item_name_to_id.get(trap_name)
+
+                    if trap_id is not None:
+                        itempool.append(
+                            CcsItem(
+                                trap_name,
+                                ItemClassification.trap,
+                                trap_id,
+                                self.player,
+                            )
+                        )
 
         self.multiworld.itempool = itempool
         self.precollected = []
@@ -158,5 +189,3 @@ class CcsWorld(World):
 
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
             zipf.writestr(lua_filename, lua_content)
-
-    

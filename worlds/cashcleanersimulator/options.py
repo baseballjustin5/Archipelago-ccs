@@ -13,7 +13,7 @@ class GameLength(Choice):
     default = 25
 
 class TrapDensity(Range):
-    display_name = "Trap Desnity"
+    display_name = "Trap Density"
     option_low = 5
     option_medium = 10
     option_high = 15

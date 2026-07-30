@@ -47,7 +47,7 @@ class CcsWorld(World):
       - Flesh out items and item behaviours
       - Add options and presets if desired
     """
-    game: ClassVar[str] = "Cash Cleaner Simulator"
+    game: str = "Cash Cleaner Simulator"
     web = CcsWebWorld()
 
     options_dataclass = CashCleanerSimulatorOptions
@@ -58,7 +58,7 @@ class CcsWorld(World):
     location_name_to_id: ClassVar[Dict[str, int]] = _locations.location_name_to_id
 
     def generate_early(self) -> None:
-        """Set up the itempool for generation. """
+        """ Set up the itempool for generation. """
         opts = cast(CashCleanerSimulatorOptions, self.options)
         enable_traps = opts.enable_traps.value
         trap_density = opts.trap_density.value
@@ -120,7 +120,7 @@ class CcsWorld(World):
                             )
                         )
 
-        self.multiworld.itempool = itempool
+        self.multiworld.itempool += itempool
         self.precollected = []
 
     def set_rules(self) -> None:

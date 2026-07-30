@@ -34,22 +34,53 @@ def has_access(player, item, rep_need) -> Callable:
     return lambda state: reputation_at_least(player, rep_need[state.count(item, player)])(state)
 
 def has_washer(player) -> Callable:
-    return lambda state: has_access(player, "Reduced Washer requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Big Washer requirement", HIGH_REP_NEED)(state) or (has_workbench_access(player)(state) and has_access(player, "Reduced Sponge requirement", BASE_REP_NEED)(state)) or has_opened_upper_area(player)(state)
+    return lambda state: (
+        has_access(player, "Reduced Washer requirement", BASE_REP_NEED)(state) or
+        has_access(player, "Reduced Big Washer requirement", HIGH_REP_NEED)(state) or
+        (has_workbench_access(player)(state) and
+        has_access(player, "Reduced Sponge requirement", BASE_REP_NEED)(state)) or
+    	has_opened_upper_area(player)(state)
+	)
 
 def has_dryer(player) -> Callable:
     return lambda state: has_access(player, "Reduced Dryer requirement", BASE_REP_NEED)(state)
 
 def has_fake_money_detector(player) -> Callable:
-    return lambda state: has_workbench_access(player)(state) or has_access(player, "Reduced Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Yen Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state) or has_access(player, "Reduced UV Lamp requirement", BASE_REP_NEED)(state)
+    return lambda state: (
+		has_workbench_access(player)(state) or 
+		has_access(player, "Reduced Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+        has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+        has_access(player, "Reduced Yen Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+        has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state) or
+        has_access(player, "Reduced UV Lamp requirement", BASE_REP_NEED)(state)
+	)
 
 def has_marked_detector(player) -> Callable:
-    return lambda state: has_workbench_access(player)(state) or has_access(player, "Reduced Marked money Counter requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced UV Lamp requirement", BASE_REP_NEED)(state)
+    return lambda state: (
+    	has_workbench_access(player)(state) or
+		has_access(player, "Reduced Marked money Counter requirement", BASE_REP_NEED)(state) or
+    	has_access(player, "Reduced UV Lamp requirement", BASE_REP_NEED)(state)
+    )
 
 def has_degoo(player) -> Callable:
-    return lambda state: (has_workbench_access(player)(state) and has_access(player, "Reduced Goo detergent requirement", HIGH_REP_NEED)(state)) or ((has_access(player, "Reduced Big Washer requirement", HIGH_REP_NEED)(state) or has_opened_upper_area(player)(state)) and has_access(player, "Reduced Goo detergent requirement", HIGH_REP_NEED)(state))
+    return lambda state: (
+        (has_workbench_access(player)(state) and
+        has_access(player, "Reduced Workbench Goo Foam requirement", LOW_REP_NEED)(state))
+        or 
+        ((has_access(player, "Reduced Big Washer requirement", HIGH_REP_NEED)(state) or
+        	has_opened_upper_area(player)(state)) and
+            has_access(player, "Reduced Goo detergent requirement", HIGH_REP_NEED)(state)
+        )
+	)
 
 def has_deink(player) -> Callable:
-    return lambda state: (has_workbench_access(player)(state) and has_access(player, "Reduced Workbench Ink Foam requirement", LOW_REP_NEED)(state)) or ((has_access(player, "Reduced Big Washer requirement", HIGH_REP_NEED)(state) or has_opened_upper_area(player)(state)) and has_access(player, "Reduced Ink detergent requirement", LOW_REP_NEED)(state))
+    return lambda state: (
+        (has_workbench_access(player)(state) and
+        has_access(player, "Reduced Workbench Ink Foam requirement", LOW_REP_NEED)(state)) or
+        ((has_access(player, "Reduced Big Washer requirement", HIGH_REP_NEED)(state) or
+		has_opened_upper_area(player)(state)) and
+		has_access(player, "Reduced Ink detergent requirement", LOW_REP_NEED)(state))
+	)
 
 def has_sticker(player) -> Callable:
     return lambda state: has_access(player, "Reduced Sticker gun requirement", BASE_REP_NEED)(state)
@@ -61,13 +92,28 @@ def has_ladder(player) -> Callable:
     return lambda state: has_access(player, "Reduced Ladder requirement", LOW_REP_NEED)(state)
 
 def has_counter(player) -> Callable:
-    return lambda state: has_access(player, "Reduced Money counter requirement", LOW_REP_NEED)(state) or has_access(player, "Reduced Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Yen Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state) or has_access(player, "Reduced UV Lamp requirement", BASE_REP_NEED)(state)
+    return lambda state: (
+        has_access(player, "Reduced Money counter requirement", LOW_REP_NEED)(state) or
+		has_access(player, "Reduced Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+		has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+		has_access(player, "Reduced Yen Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+		has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state) or
+		has_access(player, "Reduced UV Lamp requirement", BASE_REP_NEED)(state)
+	)
 
 def has_euro_counter(player) -> Callable:
-    return lambda state: has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) or has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state)
+    return lambda state: (
+        has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) or
+        has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state)
+	)
 
 def has_all_denomination_counter(player) -> Callable:
-    return lambda state: (has_access(player, "Reduced Money counter tier 2 requirement", BASE_REP_NEED)(state) and has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) and has_access(player, "Reduced Yen Money counter tier 2 requirement", BASE_REP_NEED)(state)) or has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state)
+    return lambda state: (
+        (has_access(player, "Reduced Money counter tier 2 requirement", BASE_REP_NEED)(state) and
+         has_access(player, "Reduced Euro Money counter tier 2 requirement", BASE_REP_NEED)(state) and
+         has_access(player, "Reduced Yen Money counter tier 2 requirement", BASE_REP_NEED)(state)) or
+         has_access(player, "Reduced Money counter tier 3 requirement", HIGH_REP_NEED)(state)
+	)
 
 location_name_to_rule = {
     "Main Quest Tutorial: Controls Movement":       lambda player: lambda state: reputation_at_least(player, 1)(state),
@@ -210,7 +256,7 @@ location_name_to_rule = {
     "Side quest Difficulty 6":                      lambda player: lambda state: reputation_at_least(player, 22)(state) and has_counter(player)(state),
     "Side quest Difficulty 7":                      lambda player: lambda state: reputation_at_least(player, 24)(state) and has_counter(player)(state),
     "Side quest Difficulty 8":                      lambda player: lambda state: reputation_at_least(player, 34)(state) and has_counter(player)(state),
-    "Side quest Difficulty 9":                      lambda player: lambda state: reputation_at_least(player, 38)(state) and has_counter(player)(state),
+    "Side quest Difficulty 9":                      lambda player: lambda state: reputation_at_least(player, 34)(state) and has_counter(player)(state),
                                    
 }
 

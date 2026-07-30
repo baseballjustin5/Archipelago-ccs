@@ -7,10 +7,10 @@ class EnableTraps(Toggle):
 
 class GameLength(Choice):
     display_name = "Game Length"
-    option_short = 20
+    option_short = 65
     option_medium = 43
-    option_long = 65
-    default = 25
+    option_long = 34
+    default = 43
 
 class TrapDensity(Range):
     display_name = "Trap Density"

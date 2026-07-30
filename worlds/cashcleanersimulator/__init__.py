@@ -13,7 +13,7 @@ from worlds.AutoWorld import World, WebWorld
 
 from . import items as _items
 from . import locations as _locations
-from .Rules import main_quest_rule, relax_rule, set_rules as set_ccs_rules, side_quest_rule, upper_area_rule, victory_rule
+from .Rules import main_quest_rule, relax_rule, set_rules as set_ccs_rules, side_quest_rule, upper_area_rule, victory_rule, has_done_quest
 from .options import CashCleanerSimulatorOptions
 
 
@@ -64,24 +64,21 @@ class CcsWorld(World):
         trap_density = opts.trap_density.value
         selected_traps = opts.selected_traps.value
 
-        # 20 (Short), 25 (Default), 43 (Medium), 65 (Long)
-        game_length = opts.game_length.value 
+        # 65 (Short), 43 (Medium), 35 (Long), 43 (Default),
+        game_length = opts.game_length.value
 
         item_counts = dict(_items.item_name_to_count)
-
-        base_rep_count = 15
-        filler_rep_count = max(0, (game_length - base_rep_count))
-
-        item_counts["Reputation"] = base_rep_count
-        item_counts["Filler Reputation"] = filler_rep_count
+        item_counts["Reputation"] = game_length
 
         """
         TODO: determine realistic item counts and pre-placed items.
         """
         # Populate the itempool by preserving multiplicity from ITEM_TABLE (one Item per table entry)
         itempool = []
-        for name, count in _items.item_name_to_count.items():
+        for name, count in item_counts.items():
             item_id = self.item_name_to_id[name]
+            if item_id is None:
+                continue
             classification = _items.item_name_to_classification[name]
             for _ in range(count):
                 itempool.append(
@@ -95,7 +92,7 @@ class CcsWorld(World):
 
         total_locations = len(self.location_name_to_id)
         filler_needed = total_locations - len(itempool)
-    
+
         if enable_traps and filler_needed > 0:
             import math
             num_traps = math.floor(filler_needed * (trap_density/100))
@@ -120,6 +117,27 @@ class CcsWorld(World):
                             )
                         )
 
+        # Final safety pad: If we still have fewer items than locations, fill the rest with Filler Reputation
+        remaining_slots = (total_locations - len(itempool))
+        if remaining_slots > 0:
+            import random
+            fill_option = ["Filler Reputation", "Cryptocurrency"]
+            chosen_item = random.choice(fill_option)
+            crypto_class = _items.item_name_to_classification[chosen_item]
+            crypto_id = _items.item_name_to_id[chosen_item]
+            for _ in range(remaining_slots):
+                chosen_item = random.choice(fill_option)
+                crypto_class = _items.item_name_to_classification[chosen_item]
+                crypto_id = _items.item_name_to_id[chosen_item]
+                itempool.append(
+                    CcsItem(
+                        "Cryptocurrency",
+                        crypto_class,
+                        crypto_id,
+                        self.player,
+                    )
+                )
+
         self.multiworld.itempool += itempool
         self.precollected = []
 
@@ -137,29 +155,65 @@ class CcsWorld(World):
         player = self.player
         mw = self.multiworld
 
+        # Set Regions for easy tracking
         origin = Region("Menu", player, mw, hint="Start")
-        mw.regions.append(origin)
+        main_quest = Region("Main Campaign", player, mw, hint="Main Quests & Core Progression")
+        post_game = Region("Sandbox / Post Game", player, mw, "High Side Quest Difficulties")
 
-        # Create and append locations
+        mw.regions.extend([origin, main_quest, post_game])
+
+        # set Region order
+        origin.connect(main_quest, "Access Main Campaign")
+        main_quest.connect(
+            post_game,
+            "Unlock Sandbox Post Game",
+            lambda state: (
+                has_done_quest(player, "Main Quest Main: Final Ascent")(state)
+                or has_done_quest(player, "Main Quest Main: Point Of No Return")(state)
+            )
+        )
+
         for loc_name in self.location_name_to_id.keys():
-            origin.add_locations({ loc_name: self.location_name_to_id[loc_name] })
+            # Decide which region this location belongs in based on its name
+            is_post_main_quest = loc_name in [
+                "Main Quest Side: Lawful Goo",
+                "Main Quest Side: Acid Conspiracy",
+                "Main Quest Side: Mind Your Business",
+                "Main Quest Side: The Money Flow",
+                "Main Quest Side: The Magician Choice",
+                "Main Quest Side: Ocean Of Emojis",
+                "Side quest Difficulty 6",
+                "Side quest Difficulty 7",
+                "Side quest Difficulty 8",
+                "Side quest Difficulty 9"
+            ]
+            
+            if is_post_main_quest:
+                target_region = post_game
+            else:
+                target_region = main_quest
+            # Create and append locations
+            target_region.add_locations({ loc_name: self.location_name_to_id[loc_name] })
+
+            # 4. Create event locations for tracking completions dynamically
             if loc_name.startswith("Main Quest"):
-                self.create_event_location("Menu", loc_name + " completed", main_quest_rule(loc_name)(player), loc_name + " completed")
-            if loc_name.startswith("SideQuest"):
-                self.create_event_location("Menu", loc_name + " completed", side_quest_rule(loc_name)(player), loc_name + " completed")
-            if loc_name == "Unlock relax area":
-                self.create_event_location("Menu", loc_name + " completed", relax_rule()(player), loc_name + " completed")
-            if loc_name == "Unlock upper area":
-                self.create_event_location("Menu", loc_name + " completed", upper_area_rule()(player), loc_name + " completed")
-           
+                self.create_event_location(target_region.name, loc_name + " completed", main_quest_rule(loc_name)(player), loc_name + " completed")
+            elif loc_name.startswith("SideQuest") or "Side quest Difficulty" in loc_name or "Quest Bonus:" in loc_name:
+                self.create_event_location(target_region.name, loc_name + " completed", side_quest_rule(loc_name)(player), loc_name + " completed")
+            elif loc_name == "Unlock relax area":
+                self.create_event_location(target_region.name, loc_name + " completed", relax_rule()(player), loc_name + " completed")
+            elif loc_name == "Unlock upper area":
+                self.create_event_location(target_region.name, loc_name + " completed", upper_area_rule()(player), loc_name + " completed")
+
         self.create_event_location("Menu", "Victory", victory_rule()(player), "Victory")
 
-        
+
+
     def create_item(self, name: str) -> Item:
         """
         Return an Item instance for the given item name.
         """
-        
+
         code = self.item_name_to_id.get(name)
         classification = _items.item_name_to_classification[name]
         # default all items to progression for minimal behavior; adjust as needed
@@ -169,7 +223,7 @@ class CcsWorld(World):
     def generate_output(self, output_directory: str):
         player_name = self.multiworld.player_name[self.player]
         player_name = player_name.replace("\\", "\\\\").replace('"', '\\"')
-        
+
         zip_name = f"{player_name}_ccs_ap_config.zip"
         zip_path = os.path.join(output_directory, zip_name)
 

@@ -1,5 +1,7 @@
 {
   "game": "Cash Cleaner Simulator",
+  "version": "0.2.0",
+  "compatible_version": "0.6.7",
   "author": " Aymeric Duchein & Baseballjustin5",
-  "description": "TODO: short description of Cash Cleaner Simulator"
+  "description": "An Archipelago randomizer world for Cash Cleaner Simulator"
 }
